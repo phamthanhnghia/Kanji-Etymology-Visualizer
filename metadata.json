@@ -1,0 +1,5 @@
+{
+  "name": "Kanji Etymology Visualizer",
+  "description": "An application to visualize the etymological breakdown of Japanese Kanji characters using a node-based graph. Hover over nodes to see their Vietnamese meanings and explanations, powered by the Gemini API.",
+  "requestFramePermissions": []
+}
