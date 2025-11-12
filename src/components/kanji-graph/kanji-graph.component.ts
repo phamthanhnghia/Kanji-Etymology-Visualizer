@@ -16,6 +16,7 @@ declare var jspdf: any;
 })
 export class KanjiGraphComponent {
   kanjiData = input.required<KanjiNode | null>();
+  theme = input.required<'light' | 'dark'>();
   nodeSelected = output<D3KanjiNode>();
 
   svgRef = viewChild.required<ElementRef<SVGElement>>('svg');
@@ -26,6 +27,8 @@ export class KanjiGraphComponent {
   constructor() {
     effect(() => {
         const data = this.kanjiData();
+        // Rerender graph if data or theme changes
+        this.theme(); 
         if (data && this.svgRef() && this.containerRef()) {
             this.createGraph(data);
         } else {
@@ -72,9 +75,15 @@ export class KanjiGraphComponent {
       .attr('viewBox', [0, 0, width, height])
       .style('cursor', 'grab');
 
+    const isDark = this.theme() === 'dark';
+
     const tooltip = d3.select(containerEl)
       .append('div')
-      .attr('class', 'tooltip absolute bg-gray-950 border border-gray-700 rounded-lg p-3 text-gray-200 pointer-events-none opacity-0 transition-opacity duration-200 z-10 shadow-xl')
+      .attr('class', `tooltip absolute rounded-lg p-3 pointer-events-none opacity-0 transition-opacity duration-200 z-10 shadow-xl ${
+        isDark 
+        ? 'bg-gray-950/70 backdrop-blur-md border border-white/10 text-gray-200' 
+        : 'bg-white/70 backdrop-blur-md border border-black/10 text-gray-800'
+      }`)
       .style('max-width', '250px');
 
     if (this.simulation) {
@@ -90,7 +99,7 @@ export class KanjiGraphComponent {
       .on('tick', ticked);
 
     const link = g.append('g')
-      .attr('stroke', '#4b5563') // gray-600
+      .attr('stroke', isDark ? '#9ca3af' : '#6b7280') // gray-400 dark, gray-500 light
       .attr('stroke-opacity', 0.6)
       .selectAll('line')
       .data(links)
@@ -107,14 +116,14 @@ export class KanjiGraphComponent {
 
     node.append('circle')
       .attr('r', d => (d.isRoot ? 30 : 25))
-      .attr('fill', d => (d.isRoot ? '#3b82f6' : '#1f2937')) // blue-500 : gray-800
-      .attr('stroke', d => (d.isRoot ? '#60a5fa' : '#4b5563')) // blue-400 : gray-600
+      .attr('fill', d => d.isRoot ? (isDark ? '#0ea5e9' : '#0284c7') : (isDark ? '#1f2937' : '#e5e7eb'))
+      .attr('stroke', d => d.isRoot ? (isDark ? '#7dd3fc' : '#38bdf8') : (isDark ? '#6b7280' : '#9ca3af'))
       .attr('stroke-width', 2.5);
 
     node.append('text')
       .text((d: any) => d.character)
       .attr('font-size', '1.5em')
-      .attr('fill', '#e5e7eb') // gray-200
+      .attr('fill', d => d.isRoot ? '#e5e7eb' : (isDark ? '#e5e7eb' : '#1f2937'))
       .attr('text-anchor', 'middle')
       .attr('dy', '0.35em');
 
@@ -127,8 +136,8 @@ export class KanjiGraphComponent {
         d3.select(event.currentTarget as SVGGElement).select('circle').transition().duration(150).attr('r', d.isRoot ? 35 : 30);
         tooltip.style('opacity', 1);
         tooltip.html(`
-            <div class="font-bold text-base text-blue-400">${d.vietnameseMeaning}</div>
-            <p class="mt-1 text-sm text-gray-300">${d.explanation}</p>
+            <div class="font-bold text-base text-sky-500">${d.vietnameseMeaning}</div>
+            <p class="mt-1 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}">${d.explanation}</p>
         `);
     })
     .on('mousemove', (event: MouseEvent) => {
@@ -188,6 +197,7 @@ export class KanjiGraphComponent {
   private createExportCanvas(): Promise<HTMLCanvasElement> {
     return new Promise((resolve, reject) => {
       const svgElement = this.svgRef().nativeElement;
+      const isDark = this.theme() === 'dark';
 
       const svgClone = svgElement.cloneNode(true) as SVGElement;
       const d3Clone = d3.select(svgClone);
@@ -217,7 +227,7 @@ export class KanjiGraphComponent {
             .attr('y', yOffset)
             .attr('font-size', '13px')
             .attr('font-weight', 'bold')
-            .attr('fill', '#93c5fd')
+            .attr('fill', isDark ? '#7dd3fc' : '#0ea5e9') // sky-300 dark, sky-500 light
             .text(d.vietnameseMeaning);
           yOffset += 15;
   
@@ -225,7 +235,7 @@ export class KanjiGraphComponent {
             group.append('text')
               .attr('y', yOffset)
               .attr('font-size', '12px')
-              .attr('fill', '#e5e7eb')
+              .attr('fill', isDark ? '#e5e7eb' : '#374151') // gray-200 dark, gray-700 light
               .text(`${d.hiraganaReading} (${d.romajiReading})`);
             yOffset += 15;
           }
@@ -250,7 +260,7 @@ export class KanjiGraphComponent {
               group.append('text')
                 .attr('y', yOffset + (i * 12))
                 .attr('font-size', '10px')
-                .attr('fill', '#d1d5db')
+                .attr('fill', isDark ? '#d1d5db' : '#4b5563') // gray-300 dark, gray-600 light
                 .attr('font-style', 'italic')
                 .text(textLine);
           });
@@ -285,7 +295,7 @@ export class KanjiGraphComponent {
   
       const img = new Image();
       img.onload = () => {
-        ctx.fillStyle = '#111827';
+        ctx.fillStyle = isDark ? '#111827' : '#f3f4f6';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         URL.revokeObjectURL(url);

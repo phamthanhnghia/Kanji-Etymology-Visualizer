@@ -58,7 +58,7 @@ export class GeminiService {
       return cachedData;
     }
 
-    const prompt = `Phân tích cấu trúc chữ Hán sau đây theo dạng cây triết tự: "${kanji}". Đồng thời, cung cấp 3 câu ví dụ sử dụng chữ Hán này. Trả về kết quả dưới dạng JSON. "vietnameseMeaning" là nghĩa Hán Việt. "explanation" giải thích ngắn gọn ý nghĩa. Các trường "hiraganaReading" và "romajiReading" là bắt buộc. Nếu ký tự là một bộ phận không có cách đọc riêng, hãy trả về một chuỗi rỗng "" cho các trường đó. Đối với các câu ví dụ, mỗi câu phải có trường "sentence" (câu tiếng Nhật), "reading" (cách đọc hiragana), và "translation" (nghĩa tiếng Việt). Các ví dụ chỉ nên được cung cấp cho nút gốc. Quan trọng: Đối với mỗi ví dụ, hãy chia nhỏ các trường "sentence", "reading", và "translation" thành một mảng các phần tử (token). Mỗi phần tử phải là một đối tượng có thuộc tính "text" và "type". Các loại ("type") hợp lệ là: 'subject', 'object', 'verb', 'particle', 'adjective', 'adverb', và 'other'. Việc phân chia phải tương ứng và song song giữa câu gốc, phiên âm, và bản dịch.`;
+    const prompt = `Phân tích cấu trúc chữ Hán sau đây theo dạng cây triết tự: "${kanji}". Đồng thời, cung cấp 3 câu ví dụ sử dụng chữ Hán này và một danh sách chứa ít nhất 10 từ vựng liên quan. Trả về kết quả dưới dạng JSON. "vietnameseMeaning" là nghĩa Hán Việt. "explanation" giải thích ngắn gọn ý nghĩa. Các trường "hiraganaReading" và "romajiReading" là bắt buộc. Nếu ký tự là một bộ phận không có cách đọc riêng, hãy trả về một chuỗi rỗng "" cho các trường đó. Đối với các câu ví dụ, mỗi câu phải có trường "sentence" (câu tiếng Nhật), "reading" (cách đọc hiragana), và "translation" (nghĩa tiếng Việt). Các ví dụ chỉ nên được cung cấp cho nút gốc. Quan trọng: Đối với mỗi ví dụ, hãy chia nhỏ các trường "sentence", "reading", và "translation" thành một mảng các phần tử (token). Mỗi phần tử phải là một đối tượng có thuộc tính "text" và "type". Các loại ("type") hợp lệ là: 'subject', 'object', 'verb', 'particle', 'adjective', 'adverb', và 'other'. Việc phân chia phải tương ứng và song song giữa câu gốc, phiên âm, và bản dịch. Đối với danh sách từ vựng, mỗi từ phải có các trường: "word" (từ vựng), "reading" (cách đọc hiragana/katakana), "romaji" (cách đọc romaji), "partOfSpeech" (loại từ), và "meaning" (nghĩa tiếng Việt). Danh sách từ vựng chỉ nên được cung cấp cho nút gốc.`;
 
     const commonProperties = {
         character: { type: Type.STRING },
@@ -83,6 +83,18 @@ export class GeminiService {
         type: { type: Type.STRING },
       },
       required: ['text', 'type'],
+    };
+
+    const vocabularySchema = {
+        type: Type.OBJECT,
+        properties: {
+            word: { type: Type.STRING },
+            reading: { type: Type.STRING },
+            romaji: { type: Type.STRING },
+            partOfSpeech: { type: Type.STRING },
+            meaning: { type: Type.STRING },
+        },
+        required: ['word', 'reading', 'romaji', 'partOfSpeech', 'meaning'],
     };
 
     const responseSchema = {
@@ -115,6 +127,11 @@ export class GeminiService {
                 },
                 required: ['sentence', 'reading', 'translation']
             }
+        },
+        vocabulary: {
+            type: Type.ARRAY,
+            description: 'A list of at least 10 vocabulary words related to the root Kanji.',
+            items: vocabularySchema
         }
       },
       required: requiredFields,
@@ -184,6 +201,7 @@ export class GeminiService {
       id: '', // Will be assigned later
       components: node.components ? node.components.map((comp: any) => this.recursivelyProcessComponents(comp)) : [],
       examples: node.examples || [],
+      vocabulary: node.vocabulary || [],
     };
   }
 }

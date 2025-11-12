@@ -1,9 +1,11 @@
-import { Component, ChangeDetectionStrategy, signal, computed, inject, viewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject, viewChild, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GeminiService } from './services/gemini.service';
 import { KanjiNode, SentencePart } from './models/kanji-node.model';
 import { KanjiGraphComponent } from './components/kanji-graph/kanji-graph.component';
 import { StrokeOrderComponent } from './components/stroke-order/stroke-order.component';
+
+type Theme = 'light' | 'dark' | 'system';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +14,14 @@ import { StrokeOrderComponent } from './components/stroke-order/stroke-order.com
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   private geminiService = inject(GeminiService);
   private readonly HISTORY_KEY = 'kanjiHistory';
+  private readonly THEME_KEY = 'kanji-theme';
   private readonly MAX_HISTORY_SIZE = 15;
+  private mediaQueryList: MediaQueryList;
+  private mediaQueryListener: (e: MediaQueryListEvent) => void;
+
 
   kanjiValue = signal<string>('');
   kanjiData = signal<KanjiNode | null>(null);
@@ -26,6 +32,11 @@ export class AppComponent {
   
   suggestions = signal<string[]>(['愛', '夢', '桜', '武', '道']);
   loadingSuggestions = signal<boolean>(false);
+
+  settingsOpen = signal<boolean>(false);
+  theme = signal<Theme>('system');
+  // The actual theme applied (resolves 'system' to 'light' or 'dark')
+  effectiveTheme = signal<'light' | 'dark'>('dark');
   
   graphComponent = viewChild.required(KanjiGraphComponent);
 
@@ -36,6 +47,46 @@ export class AppComponent {
 
   constructor() {
     this.loadHistory();
+    this.initializeTheme();
+
+    // Listener for system theme changes
+    this.mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+    this.mediaQueryListener = (e) => {
+        if (this.theme() === 'system') {
+            this.applyTheme();
+        }
+    };
+    this.mediaQueryList.addEventListener('change', this.mediaQueryListener);
+  }
+
+  ngOnDestroy(): void {
+    this.mediaQueryList.removeEventListener('change', this.mediaQueryListener);
+  }
+
+  private initializeTheme() {
+    const storedTheme = (localStorage.getItem(this.THEME_KEY) as Theme) || 'system';
+    this.theme.set(storedTheme);
+    this.applyTheme();
+  }
+
+  setTheme(newTheme: Theme): void {
+    this.theme.set(newTheme);
+    localStorage.setItem(this.THEME_KEY, newTheme);
+    this.applyTheme();
+    this.settingsOpen.set(false);
+  }
+
+  private applyTheme(): void {
+    const currentTheme = this.theme();
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (currentTheme === 'dark' || (currentTheme === 'system' && prefersDark)) {
+        document.documentElement.classList.add('dark');
+        this.effectiveTheme.set('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+        this.effectiveTheme.set('light');
+    }
   }
 
   onFormSubmit(event: Event) {
@@ -223,14 +274,15 @@ export class AppComponent {
   }
   
   public getTokenClass(type: string): string {
+    const isDark = this.effectiveTheme() === 'dark';
     switch (type) {
-      case 'subject':   return 'text-yellow-400 font-medium';
-      case 'object':    return 'text-green-400 font-medium';
-      case 'verb':      return 'text-red-400 font-medium';
-      case 'particle':  return 'text-cyan-400';
-      case 'adjective': return 'text-purple-400 font-medium';
-      case 'adverb':    return 'text-purple-400 font-medium';
-      default:          return '';
+        case 'subject':   return isDark ? 'text-yellow-300 font-medium' : 'text-yellow-600 font-medium';
+        case 'object':    return isDark ? 'text-green-300 font-medium' : 'text-green-600 font-medium';
+        case 'verb':      return isDark ? 'text-red-400 font-medium' : 'text-red-600 font-medium';
+        case 'particle':  return isDark ? 'text-cyan-300' : 'text-cyan-600';
+        case 'adjective': return isDark ? 'text-purple-300 font-medium' : 'text-purple-600 font-medium';
+        case 'adverb':    return isDark ? 'text-purple-300 font-medium' : 'text-purple-600 font-medium';
+        default:          return '';
     }
   }
 }

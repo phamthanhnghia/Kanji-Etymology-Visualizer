@@ -1,53 +1,80 @@
-<main class="min-h-screen bg-gray-900 text-gray-200 flex flex-col items-center p-4 sm:p-6 lg:p-8">
-  <div class="flex flex-col sm:flex-row gap-8 w-full max-w-7xl mx-auto h-full">
-
-    <!-- Left Sidebar -->
-    <aside class="w-full sm:w-1/3 md:w-1/4 flex flex-col gap-8">
+<main class="min-h-screen bg-gray-100 dark:bg-gray-900/80 text-gray-800 dark:text-gray-200 flex flex-col p-4 sm:p-6 lg:p-8 h-screen overflow-y-auto">
+  <!-- Top Block -->
+  <div class="w-full max-w-8xl mx-auto mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
       <header class="text-center sm:text-left">
-        <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">
+        <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-600">
           Kanji Triết Tự
         </h1>
-        <p class="mt-3 text-lg text-gray-400">
+        <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">
           Khám phá cấu trúc của chữ Hán qua sơ đồ tương tác.
         </p>
       </header>
 
-      <div class="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6 shadow-2xl shadow-blue-500/10">
-        <form (submit)="onFormSubmit($event)" class="flex">
-          <input
-            #kanjiInput
-            type="text"
-            placeholder="Nhập một chữ Kanji (ví dụ: 森)"
-            maxlength="1"
-            class="relative w-full bg-gray-900 border border-gray-600 rounded-none rounded-l-md px-4 py-3 text-lg text-gray-200 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 transition duration-200"
-            (input)="kanjiValue.set(kanjiInput.value)"
-            [value]="kanjiValue()"
-          />
-          <button
-            type="submit"
-            title="Phân Tích"
-            class="relative -ml-px px-4 py-3 bg-blue-600 text-white rounded-none rounded-r-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10 transition duration-200 disabled:bg-blue-800 disabled:cursor-not-allowed flex items-center justify-center"
-            [disabled]="loading() || !isValidKanji()"
-          >
-            @if (loading()) {
-              <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            }
-          </button>
-        </form>
+      <div class="bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl p-6 shadow-2xl shadow-sky-500/10">
+        <div class="flex items-start justify-between">
+          <form (submit)="onFormSubmit($event)" class="flex flex-grow">
+            <input
+              #kanjiInput
+              type="text"
+              placeholder="Nhập một chữ Kanji (ví dụ: 森)"
+              maxlength="1"
+              class="relative w-full bg-white/50 dark:bg-white/5 border-0 ring-1 ring-black/10 dark:ring-white/10 rounded-none rounded-l-md px-4 py-3 text-lg text-gray-900 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-500 focus:ring-2 focus:ring-sky-500 focus:z-10 transition duration-200"
+              (input)="kanjiValue.set(kanjiInput.value)"
+              [value]="kanjiValue()"
+            />
+            <button
+              type="submit"
+              title="Phân Tích"
+              class="relative -ml-px px-4 py-3 bg-sky-600 text-white rounded-none rounded-r-md hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:z-10 transition duration-200 disabled:bg-sky-800/50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-sky-600/20 hover:shadow-sky-500/30"
+              [disabled]="loading() || !isValidKanji()"
+            >
+              @if (loading()) {
+                <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              }
+            </button>
+          </form>
 
+          <!-- Settings Dropdown -->
+          <div class="relative ml-4">
+            <button (click)="settingsOpen.set(!settingsOpen())" class="p-2 text-gray-500 dark:text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+            @if(settingsOpen()) {
+              <div class="absolute right-0 mt-2 w-48 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md ring-1 ring-black/10 dark:ring-white/10 rounded-lg shadow-2xl z-20 py-1">
+                <button (click)="setTheme('light')" class="w-full text-left px-4 py-2 text-sm flex items-center gap-3 transition-colors duration-200" [class]="theme() === 'light' ? 'text-sky-600 dark:text-sky-400' : 'text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5'">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                  Sáng
+                </button>
+                 <button (click)="setTheme('dark')" class="w-full text-left px-4 py-2 text-sm flex items-center gap-3 transition-colors duration-200" [class]="theme() === 'dark' ? 'text-sky-600 dark:text-sky-400' : 'text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5'">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                  Tối
+                </button>
+                <button (click)="setTheme('system')" class="w-full text-left px-4 py-2 text-sm flex items-center gap-3 transition-colors duration-200" [class]="theme() === 'system' ? 'text-sky-600 dark:text-sky-400' : 'text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5'">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  Hệ thống
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+        
         <div class="mt-4 flex flex-wrap gap-2 items-center justify-center">
-          <span class="text-sm text-gray-400 mr-2">Gợi ý:</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Gợi ý:</span>
           @for (kanji of suggestions(); track kanji) {
             <button 
               (click)="onSuggestionClick(kanji)"
-              class="px-3 py-1 bg-gray-700/80 text-gray-300 rounded-full text-lg hover:bg-gray-600 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="px-3 py-1 bg-black/10 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-lg hover:bg-black/20 dark:hover:bg-white/20 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
               {{ kanji }}
             </button>
@@ -55,7 +82,7 @@
           <button 
             (click)="fetchNewSuggestions()" 
             [disabled]="loadingSuggestions()"
-            class="p-1 text-gray-400 hover:text-blue-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 disabled:cursor-not-allowed disabled:text-gray-600"
+            class="p-1 text-gray-500 dark:text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors duration-200 disabled:cursor-not-allowed disabled:text-gray-600"
             title="Tạo gợi ý mới">
             @if(loadingSuggestions()) {
               <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -71,22 +98,29 @@
         </div>
 
         @if (error()) {
-          <div class="mt-6 p-4 bg-red-900/50 border border-red-700 text-red-300 rounded-md">
+          <div class="mt-6 p-4 bg-red-500/10 dark:bg-red-900/50 border border-red-500/20 dark:border-red-700 text-red-700 dark:text-red-300 rounded-md">
             <p><span class="font-bold">Lỗi:</span> {{ error() }}</p>
           </div>
         }
       </div>
+    </div>
+  </div>
 
+  <!-- Bottom 3-Column Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full max-w-8xl mx-auto flex-grow min-h-0">
+
+    <!-- Left Sidebar -->
+    <aside class="w-full lg:col-span-3 flex flex-col gap-6">
       <!-- Node Info Display -->
-      <div class="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+      <div class="bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl p-6 h-full flex flex-col">
           @if (selectedNode(); as node) {
-            <div class="flex flex-col">
+            <div class="flex flex-col flex-grow overflow-y-auto">
                 <div class="flex items-center gap-4 mb-2">
-                    <h2 class="text-5xl font-bold text-blue-400">{{ node.character }}</h2>
+                    <h2 class="text-5xl font-bold text-sky-600 dark:text-sky-400">{{ node.character }}</h2>
                     <div class="flex items-center gap-2">
                       <button 
                           (click)="speak(node.hiraganaReading || node.character)"
-                          class="text-gray-400 hover:text-blue-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
+                          class="text-gray-500 dark:text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-full"
                           title="Phát âm">
                           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -95,37 +129,37 @@
                     </div>
                 </div>
 
-                <app-stroke-order [character]="node.character" class="my-4"></app-stroke-order>
+                <app-stroke-order [character]="node.character" [theme]="effectiveTheme()" class="my-4"></app-stroke-order>
 
                 @if (node.hiraganaReading && node.romajiReading) {
                   <div class="mb-4">
-                    <p class="text-2xl text-indigo-300 font-semibold">{{ node.hiraganaReading }}</p>
-                    <p class="text-md text-gray-500">{{ node.romajiReading }}</p>
+                    <p class="text-2xl text-indigo-600 dark:text-indigo-300 font-semibold">{{ node.hiraganaReading }}</p>
+                    <p class="text-md text-gray-500 dark:text-gray-500">{{ node.romajiReading }}</p>
                   </div>
                 }
 
-                <h3 class="text-xl font-semibold text-gray-300">{{ node.vietnameseMeaning }}</h3>
-                <p class="mt-2 text-gray-400 italic">{{ node.explanation }}</p>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-300">{{ node.vietnameseMeaning }}</h3>
+                <p class="mt-2 text-gray-600 dark:text-gray-400 italic">{{ node.explanation }}</p>
 
                 @if (node.examples && node.examples.length > 0) {
-                  <div class="mt-6 border-t border-gray-700 pt-4">
-                    <h4 class="text-md font-semibold text-gray-300 mb-3">Ví dụ:</h4>
+                  <div class="mt-6 border-t border-black/10 dark:border-white/10 pt-4">
+                    <h4 class="text-md font-semibold text-gray-800 dark:text-gray-300 mb-3">Ví dụ:</h4>
                     <ul class="space-y-4">
                       @for (example of node.examples; track $index) {
                         <li class="text-sm leading-relaxed">
                           <div class="flex items-start justify-between gap-2">
                             <div class="flex-grow">
-                              <p class="text-lg text-gray-300">
+                              <p class="text-lg text-gray-800 dark:text-gray-300">
                                 @for (part of example.sentence; track $index) {
                                   <span [class]="getTokenClass(part.type)">{{ part.text }}</span>
                                 }
                               </p>
-                              <p class="text-gray-400">
+                              <p class="text-gray-600 dark:text-gray-400">
                                 @for (part of example.reading; track $index) {
                                   <span [class]="getTokenClass(part.type)">{{ part.text }}</span>
                                 }
                               </p>
-                              <p class="text-indigo-400 italic mt-1">
+                              <p class="text-indigo-600 dark:text-indigo-400 italic mt-1">
                                 "
                                 @for (part of example.translation; track $index; let last = $last) {
                                   <span [class]="getTokenClass(part.type)">{{ part.text }}</span>@if (!last) { }
@@ -135,7 +169,7 @@
                             </div>
                             <button 
                               (click)="speak(getSentenceText(example.sentence))"
-                              class="text-gray-400 hover:text-blue-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1 shrink-0 mt-1"
+                              class="text-gray-500 dark:text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-full p-1 shrink-0 mt-1"
                               title="Phát âm ví dụ">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -149,7 +183,7 @@
                 }
             </div>
           } @else {
-            <div class="h-full flex flex-col items-center justify-center text-center text-gray-500">
+            <div class="h-full flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-500">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
@@ -160,12 +194,12 @@
       
       <!-- History Display -->
       @if (history().length > 0) {
-        <div class="bg-gray-800/30 border border-gray-700 rounded-xl p-6">
+        <div class="bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl p-6 shrink-0">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-300">Lịch Sử</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-300">Lịch Sử</h3>
             <button 
               (click)="clearHistory()"
-              class="text-sm text-gray-400 hover:text-red-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-2 py-1"
+              class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 rounded px-2 py-1"
               title="Xóa lịch sử">
               Xóa
             </button>
@@ -174,7 +208,7 @@
             @for (kanji of history(); track kanji) {
               <button 
                 (click)="onHistoryClick(kanji)"
-                class="px-3 py-1 bg-gray-700/80 text-gray-300 rounded-full text-lg hover:bg-gray-600 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="px-3 py-1 bg-black/10 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-lg hover:bg-black/20 dark:hover:bg-white/20 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500"
               >
                 {{ kanji }}
               </button>
@@ -182,31 +216,30 @@
           </div>
         </div>
       }
-
     </aside>
 
-    <!-- Right Content - Graph -->
-    <div class="flex-grow w-full sm:w-2/3 md:w-3/4 h-[85vh] min-h-[600px] bg-gray-800/30 border border-gray-700 rounded-xl overflow-hidden relative">
+    <!-- Center Content - Graph -->
+    <div class="w-full lg:col-span-6 h-full min-h-[400px] max-h-[700px] lg:min-h-0 bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl overflow-hidden relative">
       @if (!kanjiData() && !loading() && !error()) {
         <div class="w-full h-full flex flex-col items-center justify-center text-center p-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-          <h3 class="text-xl font-semibold text-gray-400">Chờ lệnh của bạn</h3>
-          <p class="text-gray-500 mt-2 max-w-sm">
+          <h3 class="text-xl font-semibold text-gray-500 dark:text-gray-400">Chờ lệnh của bạn</h3>
+          <p class="text-gray-600 dark:text-gray-500 mt-2 max-w-sm">
             Nhập một chữ Kanji và nhấn "Phân Tích" để xem sơ đồ triết tự.
           </p>
         </div>
       }
       
-      <app-kanji-graph [kanjiData]="kanjiData()" (nodeSelected)="onNodeSelected($event)" />
+      <app-kanji-graph [kanjiData]="kanjiData()" [theme]="effectiveTheme()" (nodeSelected)="onNodeSelected($event)" />
 
       @if (kanjiData() && !loading()) {
         <div class="absolute top-4 right-4 flex gap-2">
           <button
             (click)="downloadPng()"
-            class="bg-gray-900/50 hover:bg-gray-700/70 text-gray-300 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+            class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm ring-1 ring-black/10 dark:ring-white/10 hover:bg-gray-200/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500"
             title="Tải xuống dạng PNG"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -215,7 +248,7 @@
           </button>
           <button
             (click)="downloadPdf()"
-            class="bg-gray-900/50 hover:bg-gray-700/70 text-gray-300 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+            class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm ring-1 ring-black/10 dark:ring-white/10 hover:bg-gray-200/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500"
             title="Tải xuống dạng PDF"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -226,7 +259,7 @@
           </button>
            <button
             (click)="downloadJson()"
-            class="bg-gray-900/50 hover:bg-gray-700/70 text-gray-300 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+            class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm ring-1 ring-black/10 dark:ring-white/10 hover:bg-gray-200/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500"
             title="Tải xuống dạng JSON"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -235,7 +268,7 @@
           </button>
           <button
             (click)="downloadMarkdown()"
-            class="bg-gray-900/50 hover:bg-gray-700/70 text-gray-300 hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500"
+            class="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm ring-1 ring-black/10 dark:ring-white/10 hover:bg-gray-200/80 dark:hover:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white p-2 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-sky-500"
             title="Tải xuống dạng Markdown"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -245,6 +278,46 @@
         </div>
       }
     </div>
+
+    <!-- Right Sidebar - Vocabulary -->
+    <aside class="w-full lg:col-span-3">
+       @if (kanjiData()?.vocabulary && kanjiData()!.vocabulary!.length > 0) {
+        <div class="bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl p-6 h-[700px] flex flex-col">
+          <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-300 mb-4 shrink-0">Từ Vựng Liên Quan</h3>
+          <div class="overflow-y-auto pr-2 -mr-2 flex-grow min-h-0">
+            <ul class="space-y-3">
+              @for (vocab of kanjiData()!.vocabulary; track $index) {
+                <li class="bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 p-3 rounded-lg transition-colors duration-200">
+                  <div class="flex justify-between items-center">
+                    <h4 class="text-lg font-bold text-sky-600 dark:text-sky-400">{{ vocab.word }}</h4>
+                    <button 
+                        (click)="speak(vocab.word)"
+                        class="text-gray-500 dark:text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-full p-1 shrink-0"
+                        title="Phát âm từ vựng">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    </button>
+                  </div>
+                  
+                  <div class="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1 text-sm">
+                    <span class="text-indigo-600 dark:text-indigo-300">{{ vocab.reading }}</span>
+                    <span class="text-gray-600 dark:text-gray-500">[{{ vocab.romaji }}]</span>
+                    <span class="text-xs font-semibold bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-0.5 rounded-full">{{ vocab.partOfSpeech }}</span>
+                  </div>
+
+                  <p class="mt-2 text-gray-700 dark:text-gray-300 text-sm">{{ vocab.meaning }}</p>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      } @else if (kanjiData()) {
+        <div class="bg-white/60 dark:bg-gray-900/40 backdrop-blur-lg ring-1 ring-black/5 dark:ring-white/10 rounded-xl p-6 h-[700px] flex items-center justify-center text-center text-gray-500 dark:text-gray-500">
+            <p>Không có từ vựng nào cho chữ Kanji này.</p>
+        </div>
+      }
+    </aside>
 
   </div>
 </main>

@@ -11,6 +11,14 @@ export interface ExampleSentence {
   translation: SentencePart[];
 }
 
+export interface Vocabulary {
+  word: string;
+  reading: string;
+  romaji: string;
+  partOfSpeech: string;
+  meaning: string;
+}
+
 export interface KanjiNode {
   id: string;
   character: string;
@@ -20,6 +28,7 @@ export interface KanjiNode {
   romajiReading: string;
   components?: KanjiNode[];
   examples?: ExampleSentence[];
+  vocabulary?: Vocabulary[];
   isRoot?: boolean;
 }
 
